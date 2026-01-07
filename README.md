@@ -12,10 +12,10 @@ A Meteor Addon that provides a simple frontend for baritone commands.
 ## Features
 
 - Buttons for common baritone commands
+- Go To command builder
 
 ## Coming Soon
 
-- GOTO command builder
 - Selection command builder
 - Common command saving
 - GOTO cmd chaining

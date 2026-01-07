@@ -7,13 +7,17 @@ import meteordevelopment.meteorclient.gui.GuiTheme;
 import meteordevelopment.meteorclient.gui.tabs.Tab;
 import meteordevelopment.meteorclient.gui.tabs.TabScreen;
 import meteordevelopment.meteorclient.gui.tabs.WindowTabScreen;
+import meteordevelopment.meteorclient.gui.widgets.WLabel;
 import meteordevelopment.meteorclient.gui.widgets.containers.WHorizontalList;
-import meteordevelopment.meteorclient.gui.widgets.containers.WVerticalList;
+import meteordevelopment.meteorclient.gui.widgets.containers.WSection;
+import meteordevelopment.meteorclient.gui.widgets.input.WBlockPosEdit;
 import meteordevelopment.meteorclient.gui.widgets.pressable.WButton;
+import meteordevelopment.meteorclient.gui.widgets.pressable.WCheckbox;
 import meteordevelopment.meteorclient.pathing.BaritoneUtils;
 import meteordevelopment.meteorclient.pathing.PathManagers;
 import meteordevelopment.meteorclient.utils.render.color.Color;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.util.math.BlockPos;
 
 public class BaritoneControllerTab extends Tab {
     public BaritoneControllerTab() {
@@ -22,16 +26,16 @@ public class BaritoneControllerTab extends Tab {
 
     @Override
     public TabScreen createScreen(GuiTheme theme) {
-        return new AddonsTabScreen(theme, this);
+        return new BaritoneControllerScreen(theme, this);
     }
 
     @Override
     public boolean isScreen(Screen screen) {
-        return screen instanceof AddonsTabScreen;
+        return screen instanceof BaritoneControllerScreen;
     }
 
-    private static class AddonsTabScreen extends WindowTabScreen {
-        public AddonsTabScreen(GuiTheme theme, Tab tab) {
+    private static class BaritoneControllerScreen extends WindowTabScreen {
+        public BaritoneControllerScreen(GuiTheme theme, Tab tab) {
             super(theme, tab);
         }
 
@@ -51,34 +55,52 @@ public class BaritoneControllerTab extends Tab {
                 return;
             }
 
-            WVerticalList list = theme.verticalList();
-
-            list.add(commonControls());
-
-            add(list);
+            commonControls();
+            gotoCmdSection();
         }
 
-        private WHorizontalList commonControls() {
+        private void gotoCmdSection() {
+            WSection gotoCmdSection = theme.section("Go To", true);
+            WBlockPosEdit gotoCoords = theme.blockPosEdit(new BlockPos(0, 0, 0));
+            WButton gotoBtn = theme.button("Execute");
+            WHorizontalList ignoreYContainer = theme.horizontalList();
+            WCheckbox ignoreY = theme.checkbox(true);
+            WLabel label = theme.label("Ignore Y");
+
+            gotoBtn.action = () -> {
+                PathManagers.get().moveTo(gotoCoords.get(), ignoreY.checked);
+            };
+
+            add(gotoCmdSection).expandX().widget();
+            gotoCmdSection.add(gotoCoords).expandX().widget();
+            gotoCmdSection.add(ignoreYContainer).expandX().widget();
+            ignoreYContainer.add(ignoreY);
+            ignoreYContainer.add(label);
+            gotoCmdSection.add(gotoBtn).expandX().widget();
+        }
+
+        private void commonControls() {
             WHorizontalList list = theme.horizontalList();
 
-            WButton stop = theme.button("Stop");
-            stop.action = () -> {
+            WButton stopBtn = theme.button("Stop");
+            stopBtn.action = () -> {
                 PathManagers.get().stop();
             };
-            WButton pause = theme.button("Pause");
-            pause.action = () -> {
+            WButton pauseBtn = theme.button("Pause");
+            pauseBtn.action = () -> {
                 PathManagers.get().pause();
             };
-            WButton resume = theme.button("Resume");
-            resume.action = () -> {
+            WButton resumeBtn = theme.button("Resume");
+            resumeBtn.action = () -> {
                 PathManagers.get().resume();
             };
 
-            double maxWidth = WidgetSizing.maxWidgetWidth(stop, pause, resume);
+            double maxWidth = WidgetSizing.maxWidgetWidth(stopBtn, pauseBtn, resumeBtn);
 
-            WidgetSizing.forceCellWidth(maxWidth + 5, list.add(stop), list.add(pause), list.add(resume));
-
-            return list;
+            add(list);
+            list.add(stopBtn).minWidth(maxWidth + 5).widget();
+            list.add(pauseBtn).minWidth(maxWidth + 5).widget();
+            list.add(resumeBtn).minWidth(maxWidth + 5).widget();
         }
 
         @Override
