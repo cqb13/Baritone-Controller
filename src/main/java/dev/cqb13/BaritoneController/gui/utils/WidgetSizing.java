@@ -21,4 +21,17 @@ public final class WidgetSizing {
             forceCellWidth(cell, width);
         }
     }
+
+    public static double maxWidgetWidth(WWidget... widgets) {
+        double max = 0;
+
+        for (WWidget widget : widgets) {
+            widget.calculateSize();
+            if (widget != null && widget.width > max) {
+                max = widget.width;
+            }
+        }
+
+        return max;
+    }
 }
