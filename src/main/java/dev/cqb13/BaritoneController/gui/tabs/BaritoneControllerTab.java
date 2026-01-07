@@ -1,15 +1,14 @@
 package dev.cqb13.BaritoneController.gui.tabs;
 
+import dev.cqb13.BaritoneController.gui.utils.WidgetSizing;
 import meteordevelopment.meteorclient.gui.GuiTheme;
 import meteordevelopment.meteorclient.gui.tabs.Tab;
 import meteordevelopment.meteorclient.gui.tabs.TabScreen;
 import meteordevelopment.meteorclient.gui.tabs.WindowTabScreen;
+import meteordevelopment.meteorclient.gui.widgets.containers.WHorizontalList;
 import meteordevelopment.meteorclient.gui.widgets.containers.WVerticalList;
 import meteordevelopment.meteorclient.gui.widgets.pressable.WButton;
-import meteordevelopment.meteorclient.utils.player.ChatUtils;
 import net.minecraft.client.gui.screen.Screen;
-
-import static meteordevelopment.meteorclient.MeteorClient.mc;
 
 public class BaritoneControllerTab extends Tab {
     public BaritoneControllerTab() {
@@ -33,12 +32,41 @@ public class BaritoneControllerTab extends Tab {
 
         @Override
         public void initWidgets() {
-            add(theme.label("Baritone Controller")).expandX().centerX();
+            add(theme.label("Baritone Controller", true)).expandX().centerX();
             add(theme.horizontalSeparator()).expandX();
 
             WVerticalList list = theme.verticalList();
 
+            list.add(commonControls());
+
             add(list);
+        }
+
+        private WHorizontalList commonControls() {
+            WHorizontalList list = theme.horizontalList();
+
+            WButton stop = theme.button("Stop");
+            WButton pause = theme.button("Pause");
+            WButton resume = theme.button("Resume");
+
+            double maxWidth = maxButtonWidth(stop, pause, resume);
+
+            WidgetSizing.forceCellWidth(maxWidth + 5, list.add(stop), list.add(pause), list.add(resume));
+
+            return list;
+        }
+
+        private double maxButtonWidth(WButton... buttons) {
+            double max = 0;
+
+            for (WButton button : buttons) {
+                button.calculateSize();
+                if (button != null && button.width > max) {
+                    max = button.width;
+                }
+            }
+
+            return max;
         }
 
         @Override

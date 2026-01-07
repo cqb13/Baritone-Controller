@@ -1,6 +1,6 @@
 {
   "required": true,
-  "package": "dev.cqb13.BaritoneController.mixin",
+  "package": "dev.cqb13.BaritoneController.mixins",
   "compatibilityLevel": "JAVA_21",
   "client": [],
   "injectors": {
