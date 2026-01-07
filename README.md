@@ -11,9 +11,10 @@ A Meteor Addon that provides a simple frontend for baritone commands.
 
 ## Features
 
+- Buttons for common baritone commands
+
 ## Coming Soon
 
-- Buttons for: stopping, pausing, resuming
 - GOTO command builder
 - Selection command builder
 - Common command saving
