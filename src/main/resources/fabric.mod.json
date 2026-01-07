@@ -1,27 +1,21 @@
 {
   "schemaVersion": 1,
-  "id": "addon-template",
+  "id": "baritone-controller",
   "version": "${version}",
-  "name": "Addon Template",
-  "description": "An addon template for Meteor Client addons.",
-  "authors": [
-    "seasnail"
-  ],
+  "name": "Baritone Controller",
+  "description": "Provides a simple frontend for baritone commands.",
+  "authors": ["cqb13"],
   "contact": {
-    "sources": "https://github.com/MeteorDevelopment/meteor-addon-template"
+    "sources": "https://github.com/cqb13/Baritone-Controller"
   },
-  "icon": "assets/template/icon.png",
+  "icon": "assets/icon.png",
   "environment": "client",
   "entrypoints": {
-    "meteor": [
-      "com.example.addon.AddonTemplate"
-    ]
+    "meteor": ["dev.cqb13.BaritoneController.BaritoneController"]
   },
-  "mixins": [
-    "addon-template.mixins.json"
-  ],
+  "mixins": ["baritone-controller.mixins.json"],
   "custom": {
-    "meteor-client:color": "225,25,25",
+    "meteor-client:color": "78,100,135",
     "modmenu": {
       "parent": {
         "id": "meteor-client"

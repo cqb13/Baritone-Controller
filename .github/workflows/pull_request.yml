@@ -1,30 +1,27 @@
-name: Build Pull Request Artifacts
-on: pull_request
+name: Java CI with Gradle
+
+on:
+  pull_request:
+    branches: [main]
+    paths-ignore:
+      - "*.md"
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v6
+      - name: Set up JDK 21
+        uses: actions/setup-java@v5
         with:
-            persist-credentials: false
-
-      - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@v4
-
-      - name: Set up Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'temurin'
           java-version: 21
-
+          distribution: "corretto"
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
       - name: Build with Gradle
         run: ./gradlew build
-
-      - name: Release
-        uses: actions/upload-artifact@v4
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v6.0.0
         with:
-          name: Artifacts
+          name: pull-request-build
           path: build/libs/

@@ -1,10 +1,8 @@
 {
   "required": true,
-  "package": "com.example.addon.mixin",
+  "package": "dev.cqb13.BaritoneController.mixin",
   "compatibilityLevel": "JAVA_21",
-  "client": [
-    "ExampleMixin"
-  ],
+  "client": [],
   "injectors": {
     "defaultRequire": 1
   }
