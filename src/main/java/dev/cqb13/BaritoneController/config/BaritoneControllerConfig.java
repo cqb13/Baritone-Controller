@@ -11,6 +11,7 @@ import net.minecraft.util.math.BlockPos;
 public class BaritoneControllerConfig extends System<BaritoneControllerConfig> {
     private ArrayList<Section> collapsedSections = new ArrayList<>();
     private GotoCmdSettings gotoCmdSettings = new GotoCmdSettings(new BlockPos(0, 0, 0), true);
+    private SelCmdSettings selCmdSettings = new SelCmdSettings(new BlockPos(0, 0, 0), new BlockPos(0, 0, 0));
 
     public BaritoneControllerConfig() {
         super("baritone-controller");
@@ -46,6 +47,10 @@ public class BaritoneControllerConfig extends System<BaritoneControllerConfig> {
 
     public GotoCmdSettings getGotoCmdSettings() {
         return gotoCmdSettings;
+    }
+
+    public SelCmdSettings getSelCmdSettings() {
+        return selCmdSettings;
     }
 
     public void setGotoCmdSettings(GotoCmdSettings newSettings) {

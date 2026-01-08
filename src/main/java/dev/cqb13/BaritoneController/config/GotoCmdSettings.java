@@ -1,10 +1,10 @@
 package dev.cqb13.BaritoneController.config;
 
+import java.util.Objects;
+
 import meteordevelopment.meteorclient.utils.misc.ISerializable;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.BlockPos;
-
-import java.util.Objects;
 
 public class GotoCmdSettings implements ISerializable<GotoCmdSettings> {
     private volatile BlockPos blockPos;

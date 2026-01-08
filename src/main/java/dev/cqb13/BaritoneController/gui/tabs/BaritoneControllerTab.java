@@ -5,6 +5,7 @@ import static meteordevelopment.meteorclient.MeteorClient.mc;
 import dev.cqb13.BaritoneController.config.BaritoneControllerConfig;
 import dev.cqb13.BaritoneController.config.BaritoneControllerConfig.Section;
 import dev.cqb13.BaritoneController.config.GotoCmdSettings;
+import dev.cqb13.BaritoneController.config.SelCmdSettings;
 import dev.cqb13.BaritoneController.gui.utils.WidgetSizing;
 import meteordevelopment.meteorclient.gui.GuiTheme;
 import meteordevelopment.meteorclient.gui.tabs.Tab;
@@ -20,6 +21,12 @@ import meteordevelopment.meteorclient.pathing.BaritoneUtils;
 import meteordevelopment.meteorclient.pathing.PathManagers;
 import meteordevelopment.meteorclient.utils.render.color.Color;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.util.math.BlockPos;
+import baritone.api.BaritoneAPI;
+import baritone.api.IBaritone;
+import baritone.api.selection.ISelectionManager;
+import baritone.api.utils.BetterBlockPos;
+import baritone.process.BuilderProcess;
 
 public class BaritoneControllerTab extends Tab {
     public BaritoneControllerTab() {
@@ -38,11 +45,13 @@ public class BaritoneControllerTab extends Tab {
 
     private static class BaritoneControllerScreen extends WindowTabScreen {
         private BaritoneControllerConfig settings;
+        private IBaritone b;
 
         public BaritoneControllerScreen(GuiTheme theme, Tab tab) {
             super(theme, tab);
 
             this.settings = BaritoneControllerConfig.get();
+            b = BaritoneAPI.getProvider().getPrimaryBaritone();
         }
 
         @Override
@@ -63,6 +72,51 @@ public class BaritoneControllerTab extends Tab {
 
             commonControls();
             gotoCmdSection();
+            selCmdSection();
+        }
+
+        private void selCmdSection() {
+            SelCmdSettings sectionSettings = settings.getSelCmdSettings();
+
+            WSection selCmdSection = theme.section("Selection", true);
+            WBlockPosEdit selection1 = theme.blockPosEdit(new BlockPos(0, 0, 0));
+            WBlockPosEdit selection2 = theme.blockPosEdit(new BlockPos(0, 0, 0));
+            WHorizontalList selectionManagementContainer = theme.horizontalList();
+            WButton createSelBtn = theme.button("Create Selection");
+            WButton clearSelBtn = theme.button("Clear Selection");
+            WButton clearAreaBtn = theme.button("Clear Area");
+
+            selection1.action = () -> {
+                sectionSettings.setSe1(selection1.get());
+                // TODO: save here
+            };
+
+            selection2.action = () -> {
+                sectionSettings.setSel2(selection2.get());
+                // TODO: save here
+            };
+
+            createSelBtn.action = () -> {
+                sectionSettings.createBaritoneSelection(b);
+            };
+
+            clearSelBtn.action = () -> {
+                sectionSettings.removeSellection(b);
+            };
+
+            clearAreaBtn.action = () -> {
+                System.out.println(sectionSettings.getSel1().toString());
+                System.out.println(sectionSettings.getSel2().toString());
+                sectionSettings.clearArea(b);
+            };
+
+            add(selCmdSection).expandX();
+            selCmdSection.add(selection1).expandX();
+            selCmdSection.add(selection2).expandX();
+            selCmdSection.add(selectionManagementContainer).expandX();
+            selectionManagementContainer.add(createSelBtn).expandX();
+            selectionManagementContainer.add(clearSelBtn).expandX();
+            selCmdSection.add(clearAreaBtn).expandX();
         }
 
         private void gotoCmdSection() {

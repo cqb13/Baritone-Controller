@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.fabric.loom)
+    id("eclipse")
 }
 
 base {
@@ -27,6 +28,9 @@ dependencies {
 
     // Meteor
     modImplementation(libs.meteor.client)
+
+    // Baritone
+    modCompileOnly(libs.baritone)
 }
 
 tasks {
