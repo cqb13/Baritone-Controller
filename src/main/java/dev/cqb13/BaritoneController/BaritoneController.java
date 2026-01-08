@@ -1,13 +1,15 @@
 package dev.cqb13.BaritoneController;
 
+import org.slf4j.Logger;
+
 import com.mojang.logging.LogUtils;
 
+import dev.cqb13.BaritoneController.config.BaritoneControllerConfig;
 import dev.cqb13.BaritoneController.gui.tabs.BaritoneControllerTab;
 import meteordevelopment.meteorclient.addons.GithubRepo;
 import meteordevelopment.meteorclient.addons.MeteorAddon;
 import meteordevelopment.meteorclient.gui.tabs.Tabs;
-
-import org.slf4j.Logger;
+import meteordevelopment.meteorclient.systems.Systems;
 
 public class BaritoneController extends MeteorAddon {
     public static final Logger LOG = LogUtils.getLogger();
@@ -15,6 +17,8 @@ public class BaritoneController extends MeteorAddon {
     @Override
     public void onInitialize() {
         LOG.info("Initializing Baritone Controller\n\tBy: cqb13 - https://github.com/cqb13/Baritone-Controller");
+
+        Systems.add(new BaritoneControllerConfig());
 
         LOG.info("Adding Tabs...");
         Tabs.add(new BaritoneControllerTab());

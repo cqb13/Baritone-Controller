@@ -2,6 +2,9 @@ package dev.cqb13.BaritoneController.gui.tabs;
 
 import static meteordevelopment.meteorclient.MeteorClient.mc;
 
+import dev.cqb13.BaritoneController.config.BaritoneControllerConfig;
+import dev.cqb13.BaritoneController.config.BaritoneControllerConfig.Section;
+import dev.cqb13.BaritoneController.config.GotoCmdSettings;
 import dev.cqb13.BaritoneController.gui.utils.WidgetSizing;
 import meteordevelopment.meteorclient.gui.GuiTheme;
 import meteordevelopment.meteorclient.gui.tabs.Tab;
@@ -17,7 +20,6 @@ import meteordevelopment.meteorclient.pathing.BaritoneUtils;
 import meteordevelopment.meteorclient.pathing.PathManagers;
 import meteordevelopment.meteorclient.utils.render.color.Color;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.util.math.BlockPos;
 
 public class BaritoneControllerTab extends Tab {
     public BaritoneControllerTab() {
@@ -35,8 +37,12 @@ public class BaritoneControllerTab extends Tab {
     }
 
     private static class BaritoneControllerScreen extends WindowTabScreen {
+        private BaritoneControllerConfig settings;
+
         public BaritoneControllerScreen(GuiTheme theme, Tab tab) {
             super(theme, tab);
+
+            this.settings = BaritoneControllerConfig.get();
         }
 
         @Override
@@ -60,14 +66,31 @@ public class BaritoneControllerTab extends Tab {
         }
 
         private void gotoCmdSection() {
-            WSection gotoCmdSection = theme.section("Go To", true);
-            WBlockPosEdit gotoCoords = theme.blockPosEdit(new BlockPos(0, 0, 0));
+            GotoCmdSettings sectionSettings = BaritoneControllerConfig.get().getGotoCmdSettings();
+            boolean isCollapsed = this.settings.isCollapsedSection(Section.Goto);
+
+            WSection gotoCmdSection = theme.section("Go To", !isCollapsed);
+            gotoCmdSection.action = () -> {
+                if (isCollapsed) {
+                    settings.removeCollapsedSection(Section.Goto);
+                } else {
+                    settings.addCollapsedSection(Section.Goto);
+                }
+            };
+
+            WBlockPosEdit gotoCoords = theme.blockPosEdit(sectionSettings.getBlockPos());
             WButton gotoBtn = theme.button("Execute");
             WHorizontalList ignoreYContainer = theme.horizontalList();
-            WCheckbox ignoreY = theme.checkbox(true);
+            WCheckbox ignoreY = theme.checkbox(sectionSettings.getIgnoreY());
+            ignoreY.action = () -> {
+                BaritoneControllerConfig.get()
+                        .setGotoCmdSettings(new GotoCmdSettings(gotoCoords.get(), ignoreY.checked));
+            };
             WLabel label = theme.label("Ignore Y");
 
             gotoBtn.action = () -> {
+                BaritoneControllerConfig.get()
+                        .setGotoCmdSettings(new GotoCmdSettings(gotoCoords.get(), ignoreY.checked));
                 PathManagers.get().moveTo(gotoCoords.get(), ignoreY.checked);
             };
 
