@@ -8,6 +8,7 @@ import dev.cqb13.BaritoneController.BaritoneManager;
 import dev.cqb13.BaritoneController.config.BaritoneControllerConfig;
 import dev.cqb13.BaritoneController.config.GotoCmdConfig;
 import dev.cqb13.BaritoneController.config.SelCmdConfig;
+import dev.cqb13.BaritoneController.config.TunnelCmdConfig;
 import dev.cqb13.BaritoneController.gui.utils.WidgetSizing;
 import meteordevelopment.meteorclient.gui.GuiTheme;
 import meteordevelopment.meteorclient.gui.tabs.Tab;
@@ -74,7 +75,9 @@ public class BaritoneControllerTab extends Tab {
         }
 
         private void tunnelCmdSection() {
-            WSection selCmdSection = theme.section("Tunnel", true);
+            TunnelCmdConfig sectionSettings = settings.getTunnelCmdConfig();
+
+            WSection tunnelCmdSection = theme.section("Tunnel", sectionSettings.isExpanded());
 
             WHorizontalList widthContainer = theme.horizontalList();
             WLabel widthLabel = theme.label("Width");
@@ -90,25 +93,41 @@ public class BaritoneControllerTab extends Tab {
 
             WButton digBtn = theme.button("Start Digging");
 
-            add(selCmdSection).expandX();
+            tunnelCmdSection.action = () -> {
+                sectionSettings.setExpanded(tunnelCmdSection.isExpanded());
+            };
 
-            selCmdSection.add(widthContainer).expandX();
+            width.action = () -> {
+                sectionSettings.setWidth(width.get());
+            };
+
+            height.action = () -> {
+                sectionSettings.setHeight(height.get());
+            };
+
+            depth.action = () -> {
+                sectionSettings.setDepth(depth.get());
+            };
+
+            add(tunnelCmdSection).expandX();
+
+            tunnelCmdSection.add(widthContainer).expandX();
             widthContainer.add(widthLabel).expandCellX();
             widthContainer.add(width).expandX();
 
-            selCmdSection.add(heightContainer).expandX();
+            tunnelCmdSection.add(heightContainer).expandX();
             heightContainer.add(heightLabel).expandCellX();
             heightContainer.add(height).expandX();
 
-            selCmdSection.add(depthContainer).expandX();
+            tunnelCmdSection.add(depthContainer).expandX();
             depthContainer.add(depthLabel).expandCellX();
             depthContainer.add(depth).expandX();
 
-            selCmdSection.add(digBtn).centerX().expandX();
+            tunnelCmdSection.add(digBtn).centerX().expandX();
         }
 
         private void selCmdSection() {
-            SelCmdConfig sectionSettings = settings.getSelCmdSettings();
+            SelCmdConfig sectionSettings = settings.getSelCmdConfig();
 
             WSection selCmdSection = theme.section("Selection", sectionSettings.isExpanded());
             WBlockPosEdit selection1 = theme.blockPosEdit(sectionSettings.getSel1());
@@ -158,7 +177,7 @@ public class BaritoneControllerTab extends Tab {
         }
 
         private void gotoCmdSection() {
-            GotoCmdConfig sectionSettings = BaritoneControllerConfig.get().getGotoCmdSettings();
+            GotoCmdConfig sectionSettings = BaritoneControllerConfig.get().getGotoCmdConfig();
 
             WSection gotoCmdSection = theme.section("Go To", sectionSettings.isExpanded());
             WBlockPosEdit gotoCoords = theme.blockPosEdit(sectionSettings.getBlockPos());

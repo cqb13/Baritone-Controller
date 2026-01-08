@@ -6,43 +6,51 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.BlockPos;
 
 public class BaritoneControllerConfig extends System<BaritoneControllerConfig> {
-    private final GotoCmdConfig gotoCmdSettings;
-    private final SelCmdConfig selCmdSettings;
+    private final GotoCmdConfig gotoCmdConfig;
+    private final SelCmdConfig selCmdConfig;
+    private final TunnelCmdConfig tunnelCmdConfig;
 
     public BaritoneControllerConfig() {
         super("baritone-controller");
 
         Runnable saveCallback = this::save;
 
-        this.gotoCmdSettings = new GotoCmdConfig(
+        this.gotoCmdConfig = new GotoCmdConfig(
                 BlockPos.ORIGIN,
                 true,
                 saveCallback);
 
-        this.selCmdSettings = new SelCmdConfig(
+        this.selCmdConfig = new SelCmdConfig(
                 BlockPos.ORIGIN,
                 BlockPos.ORIGIN,
                 saveCallback);
+
+        this.tunnelCmdConfig = new TunnelCmdConfig(3, 3, 5, saveCallback);
     }
 
     public static BaritoneControllerConfig get() {
         return Systems.get(BaritoneControllerConfig.class);
     }
 
-    public GotoCmdConfig getGotoCmdSettings() {
-        return gotoCmdSettings;
+    public GotoCmdConfig getGotoCmdConfig() {
+        return gotoCmdConfig;
     }
 
-    public SelCmdConfig getSelCmdSettings() {
-        return selCmdSettings;
+    public SelCmdConfig getSelCmdConfig() {
+        return selCmdConfig;
+    }
+
+    public TunnelCmdConfig getTunnelCmdConfig() {
+        return tunnelCmdConfig;
     }
 
     @Override
     public NbtCompound toTag() {
         NbtCompound tag = new NbtCompound();
 
-        tag.put("goto-cmd", this.gotoCmdSettings.toTag());
-        tag.put("sel-cmd", this.selCmdSettings.toTag());
+        tag.put("goto-cmd", this.gotoCmdConfig.toTag());
+        tag.put("sel-cmd", this.selCmdConfig.toTag());
+        tag.put("tunnel-cmd", this.tunnelCmdConfig.toTag());
 
         return tag;
     }
@@ -50,12 +58,16 @@ public class BaritoneControllerConfig extends System<BaritoneControllerConfig> {
     @Override
     public BaritoneControllerConfig fromTag(NbtCompound tag) {
         tag.getCompound("goto-cmd").ifPresentOrElse(
-                gotoTag -> this.gotoCmdSettings.fromTag(gotoTag),
-                () -> this.gotoCmdSettings.reset());
+                gotoTag -> this.gotoCmdConfig.fromTag(gotoTag),
+                () -> this.gotoCmdConfig.reset());
 
         tag.getCompound("sel-cmd").ifPresentOrElse(
-                selTag -> this.selCmdSettings.fromTag(selTag),
-                () -> this.selCmdSettings.reset());
+                selTag -> this.selCmdConfig.fromTag(selTag),
+                () -> this.selCmdConfig.reset());
+
+        tag.getCompound("tunnel-cmd").ifPresentOrElse(
+                tunnelTag -> this.tunnelCmdConfig.fromTag(tunnelTag),
+                () -> this.tunnelCmdConfig.reset());
 
         return this;
     }
