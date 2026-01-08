@@ -13,9 +13,9 @@ A Meteor Addon that provides a simple frontend for baritone commands.
 
 - Buttons for common baritone commands
 - Go To command builder
+- Sel command builder
 
 ## Coming Soon
 
-- Selection command builder
 - Common command saving
 - GOTO cmd chaining
