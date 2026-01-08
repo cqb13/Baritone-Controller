@@ -17,6 +17,7 @@ import meteordevelopment.meteorclient.gui.widgets.WLabel;
 import meteordevelopment.meteorclient.gui.widgets.containers.WHorizontalList;
 import meteordevelopment.meteorclient.gui.widgets.containers.WSection;
 import meteordevelopment.meteorclient.gui.widgets.input.WBlockPosEdit;
+import meteordevelopment.meteorclient.gui.widgets.input.WIntEdit;
 import meteordevelopment.meteorclient.gui.widgets.pressable.WButton;
 import meteordevelopment.meteorclient.gui.widgets.pressable.WCheckbox;
 import meteordevelopment.meteorclient.pathing.BaritoneUtils;
@@ -69,6 +70,41 @@ public class BaritoneControllerTab extends Tab {
             commonControls();
             gotoCmdSection();
             selCmdSection();
+            tunnelCmdSection();
+        }
+
+        private void tunnelCmdSection() {
+            WSection selCmdSection = theme.section("Tunnel", true);
+
+            WHorizontalList widthContainer = theme.horizontalList();
+            WLabel widthLabel = theme.label("Width");
+            WIntEdit width = theme.intEdit(3, 1, 1000, 1, 100, false);
+
+            WHorizontalList heightContainer = theme.horizontalList();
+            WLabel heightLabel = theme.label("Height");
+            WIntEdit height = theme.intEdit(3, 1, 1000, 1, 100, false);
+
+            WHorizontalList depthContainer = theme.horizontalList();
+            WLabel depthLabel = theme.label("Depth");
+            WIntEdit depth = theme.intEdit(5, 1, 10000, 1, 100, false);
+
+            WButton digBtn = theme.button("Start Digging");
+
+            add(selCmdSection).expandX();
+
+            selCmdSection.add(widthContainer).expandX();
+            widthContainer.add(widthLabel).expandCellX();
+            widthContainer.add(width).expandX();
+
+            selCmdSection.add(heightContainer).expandX();
+            heightContainer.add(heightLabel).expandCellX();
+            heightContainer.add(height).expandX();
+
+            selCmdSection.add(depthContainer).expandX();
+            depthContainer.add(depthLabel).expandCellX();
+            depthContainer.add(depth).expandX();
+
+            selCmdSection.add(digBtn).centerX().expandX();
         }
 
         private void selCmdSection() {
