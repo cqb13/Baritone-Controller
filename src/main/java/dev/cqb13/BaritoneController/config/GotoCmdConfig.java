@@ -1,18 +1,22 @@
 package dev.cqb13.BaritoneController.config;
 
-import java.util.Objects;
-
-import meteordevelopment.meteorclient.utils.misc.ISerializable;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.BlockPos;
 
-public class GotoCmdSettings implements ISerializable<GotoCmdSettings> {
-    private volatile BlockPos blockPos;
-    private volatile boolean ignoreY;
+public class GotoCmdConfig extends SectionConfig {
+    private BlockPos blockPos;
+    private boolean ignoreY;
 
-    public GotoCmdSettings(BlockPos blockPos, boolean ignoreY) {
+    public GotoCmdConfig(BlockPos blockPos, boolean ignoreY, Runnable save) {
+        super("goto", true, save);
         this.blockPos = blockPos;
         this.ignoreY = ignoreY;
+    }
+
+    @Override
+    public void reset() {
+        this.blockPos = BlockPos.ORIGIN;
+        this.ignoreY = true;
     }
 
     public BlockPos getBlockPos() {
@@ -21,6 +25,7 @@ public class GotoCmdSettings implements ISerializable<GotoCmdSettings> {
 
     public void setBlockPos(BlockPos pos) {
         this.blockPos = pos;
+        super.save();
     }
 
     public boolean getIgnoreY() {
@@ -29,11 +34,12 @@ public class GotoCmdSettings implements ISerializable<GotoCmdSettings> {
 
     public void setIgnoreY(boolean value) {
         this.ignoreY = value;
+        super.save();
     }
 
     @Override
     public NbtCompound toTag() {
-        NbtCompound tag = new NbtCompound();
+        var tag = super.toTag();
 
         tag.putLong("pos", blockPos.asLong());
         tag.putBoolean("ignoreY", ignoreY);
@@ -42,7 +48,9 @@ public class GotoCmdSettings implements ISerializable<GotoCmdSettings> {
     }
 
     @Override
-    public GotoCmdSettings fromTag(NbtCompound tag) {
+    public GotoCmdConfig fromTag(NbtCompound tag) {
+        super.fromTag(tag);
+
         tag.getLong("pos").ifPresentOrElse(
                 l -> blockPos = BlockPos.fromLong(l),
                 () -> blockPos = new BlockPos(0, 0, 0));
@@ -50,20 +58,5 @@ public class GotoCmdSettings implements ISerializable<GotoCmdSettings> {
         this.ignoreY = tag.getBoolean("ignoreY").orElse(true);
 
         return this;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (o == null || getClass() != o.getClass())
-            return false;
-        GotoCmdSettings otherSetting = (GotoCmdSettings) o;
-        return Objects.equals(blockPos, otherSetting.blockPos) && ignoreY == otherSetting.ignoreY;
-    }
-
-    @Override
-    public int hashCode() {
-        return blockPos.hashCode();
     }
 }

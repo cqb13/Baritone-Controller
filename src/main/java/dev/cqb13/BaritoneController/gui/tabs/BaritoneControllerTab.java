@@ -2,10 +2,12 @@ package dev.cqb13.BaritoneController.gui.tabs;
 
 import static meteordevelopment.meteorclient.MeteorClient.mc;
 
+import baritone.api.BaritoneAPI;
+import baritone.api.IBaritone;
+import dev.cqb13.BaritoneController.BaritoneManager;
 import dev.cqb13.BaritoneController.config.BaritoneControllerConfig;
-import dev.cqb13.BaritoneController.config.BaritoneControllerConfig.Section;
-import dev.cqb13.BaritoneController.config.GotoCmdSettings;
-import dev.cqb13.BaritoneController.config.SelCmdSettings;
+import dev.cqb13.BaritoneController.config.GotoCmdConfig;
+import dev.cqb13.BaritoneController.config.SelCmdConfig;
 import dev.cqb13.BaritoneController.gui.utils.WidgetSizing;
 import meteordevelopment.meteorclient.gui.GuiTheme;
 import meteordevelopment.meteorclient.gui.tabs.Tab;
@@ -21,8 +23,6 @@ import meteordevelopment.meteorclient.pathing.BaritoneUtils;
 import meteordevelopment.meteorclient.pathing.PathManagers;
 import meteordevelopment.meteorclient.utils.render.color.Color;
 import net.minecraft.client.gui.screen.Screen;
-import baritone.api.BaritoneAPI;
-import baritone.api.IBaritone;
 
 public class BaritoneControllerTab extends Tab {
     public BaritoneControllerTab() {
@@ -72,17 +72,9 @@ public class BaritoneControllerTab extends Tab {
         }
 
         private void selCmdSection() {
-            SelCmdSettings sectionSettings = settings.getSelCmdSettings();
-            boolean isCollapsed = this.settings.isCollapsedSection(Section.Sel);
+            SelCmdConfig sectionSettings = settings.getSelCmdSettings();
 
-            WSection selCmdSection = theme.section("Selection", !isCollapsed);
-            selCmdSection.action = () -> {
-                if (isCollapsed) {
-                    settings.removeCollapsedSection(Section.Sel);
-                } else {
-                    settings.addCollapsedSection(Section.Sel);
-                }
-            };
+            WSection selCmdSection = theme.section("Selection", sectionSettings.isExpanded());
             WBlockPosEdit selection1 = theme.blockPosEdit(sectionSettings.getSel1());
             WBlockPosEdit selection2 = theme.blockPosEdit(sectionSettings.getSel2());
             WHorizontalList selectionManagementContainer = theme.horizontalList();
@@ -90,28 +82,34 @@ public class BaritoneControllerTab extends Tab {
             WButton clearSelBtn = theme.button("Clear Selection");
             WButton clearAreaBtn = theme.button("Clear Area");
 
+            selCmdSection.action = () -> {
+                sectionSettings.setExpanded(selCmdSection.isExpanded());
+            };
+
             selection1.action = () -> {
                 sectionSettings.setSe1(selection1.get());
-                settings.save();
             };
 
             selection2.action = () -> {
                 sectionSettings.setSel2(selection2.get());
-                settings.save();
             };
 
             createSelBtn.action = () -> {
-                sectionSettings.createBaritoneSelection(b);
+                if (sectionSettings.getSelection() != null) {
+                    BaritoneManager.removeSelection(b, sectionSettings.getSelection());
+                }
+
+                var sel = BaritoneManager.createSelection(b, sectionSettings.getSel1(), sectionSettings.getSel2());
+
+                sectionSettings.setSelection(sel);
             };
 
             clearSelBtn.action = () -> {
-                sectionSettings.removeSellection(b);
+                BaritoneManager.removeSelection(b, sectionSettings.getSelection());
             };
 
             clearAreaBtn.action = () -> {
-                System.out.println(sectionSettings.getSel1().toString());
-                System.out.println(sectionSettings.getSel2().toString());
-                sectionSettings.clearArea(b);
+                BaritoneManager.clearSelectionArea(b, sectionSettings.getSelection());
             };
 
             add(selCmdSection).expandX();
@@ -124,37 +122,28 @@ public class BaritoneControllerTab extends Tab {
         }
 
         private void gotoCmdSection() {
-            GotoCmdSettings sectionSettings = BaritoneControllerConfig.get().getGotoCmdSettings();
-            boolean isCollapsed = this.settings.isCollapsedSection(Section.Goto);
+            GotoCmdConfig sectionSettings = BaritoneControllerConfig.get().getGotoCmdSettings();
 
-            WSection gotoCmdSection = theme.section("Go To", !isCollapsed);
-            gotoCmdSection.action = () -> {
-                if (isCollapsed) {
-                    settings.removeCollapsedSection(Section.Goto);
-                } else {
-                    settings.addCollapsedSection(Section.Goto);
-                }
-            };
-
+            WSection gotoCmdSection = theme.section("Go To", sectionSettings.isExpanded());
             WBlockPosEdit gotoCoords = theme.blockPosEdit(sectionSettings.getBlockPos());
             WButton gotoBtn = theme.button("Execute");
             WHorizontalList ignoreYContainer = theme.horizontalList();
             WCheckbox ignoreY = theme.checkbox(sectionSettings.getIgnoreY());
             WLabel label = theme.label("Ignore Y");
 
+            gotoCmdSection.action = () -> {
+                sectionSettings.setExpanded(gotoCmdSection.isExpanded());
+            };
+
             gotoCoords.action = () -> {
                 sectionSettings.setBlockPos(gotoCoords.get());
-                settings.save();
             };
 
             ignoreY.action = () -> {
                 sectionSettings.setIgnoreY(ignoreY.checked);
-                settings.save();
             };
 
             gotoBtn.action = () -> {
-                BaritoneControllerConfig.get()
-                        .setGotoCmdSettings(new GotoCmdSettings(gotoCoords.get(), ignoreY.checked));
                 PathManagers.get().moveTo(gotoCoords.get(), ignoreY.checked);
             };
 
