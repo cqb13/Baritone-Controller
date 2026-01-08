@@ -2,7 +2,7 @@
 
 A Meteor Addon that provides a simple frontend for baritone commands.
 
-Join for support
+<p>Join for support<p>
 <a href="https://discord.gg/TtmQs7BzPJ"><img src="https://invidget.switchblade.xyz/TtmQs7BzPJ"></a>
 
 [Find more cool addons here](https://meteoraddons.com/)
