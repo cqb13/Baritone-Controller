@@ -21,8 +21,8 @@ public class SelCmdSettings implements ISerializable<SelCmdSettings> {
     private volatile ISelection sel;
 
     public SelCmdSettings(BlockPos sel1, BlockPos sel2) {
-        this.sel1 = new BlockPos(0, 0, 0);
-        this.sel2 = new BlockPos(0, 0, 0);
+        this.sel1 = sel1;
+        this.sel2 = sel2;
     }
 
     public BlockPos getSel1() {
@@ -30,7 +30,7 @@ public class SelCmdSettings implements ISerializable<SelCmdSettings> {
     }
 
     public BlockPos getSel2() {
-        return this.sel1;
+        return this.sel2;
     }
 
     public ISelection getSelection() {
@@ -90,11 +90,22 @@ public class SelCmdSettings implements ISerializable<SelCmdSettings> {
     public NbtCompound toTag() {
         NbtCompound tag = new NbtCompound();
 
+        tag.putLong("sel1", sel1.asLong());
+        tag.putLong("sel2", sel2.asLong());
+
         return tag;
     }
 
     @Override
     public SelCmdSettings fromTag(NbtCompound tag) {
+        tag.getLong("sel1").ifPresentOrElse(
+                l -> sel1 = BlockPos.fromLong(l),
+                () -> sel1 = new BlockPos(0, 0, 0));
+
+        tag.getLong("sel2").ifPresentOrElse(
+                l -> sel2 = BlockPos.fromLong(l),
+                () -> sel2 = new BlockPos(0, 0, 0));
+
         return this;
     }
 

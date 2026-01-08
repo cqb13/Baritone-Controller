@@ -64,11 +64,12 @@ public class BaritoneControllerConfig extends System<BaritoneControllerConfig> {
 
         var list = new net.minecraft.nbt.NbtList();
         for (Section section : collapsedSections) {
-            list.add(net.minecraft.nbt.NbtString.of(section.name()));
+            list.add(net.minecraft.nbt.NbtString.of(section.toString()));
         }
         tag.put("collapsed-sections", list);
 
         tag.put("goto-cmd", this.gotoCmdSettings.toTag());
+        tag.put("sel-cmd", this.selCmdSettings.toTag());
 
         return tag;
     }
@@ -89,11 +90,16 @@ public class BaritoneControllerConfig extends System<BaritoneControllerConfig> {
                 gotoTag -> this.gotoCmdSettings.fromTag(gotoTag),
                 () -> this.gotoCmdSettings = new GotoCmdSettings(new BlockPos(0, 0, 0), true));
 
+        tag.getCompound("sel-cmd").ifPresentOrElse(
+                selTag -> this.selCmdSettings.fromTag(selTag),
+                () -> this.selCmdSettings = new SelCmdSettings(new BlockPos(0, 0, 0), new BlockPos(0, 0, 0)));
+
         return this;
     }
 
     public enum Section {
-        Goto;
+        Goto,
+        Sel;
 
         public static Optional<Section> fromString(String value) {
             if (value == null)

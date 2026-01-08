@@ -19,32 +19,33 @@ public class GotoCmdSettings implements ISerializable<GotoCmdSettings> {
         return this.blockPos;
     }
 
+    public void setBlockPos(BlockPos pos) {
+        this.blockPos = pos;
+    }
+
     public boolean getIgnoreY() {
         return this.ignoreY;
+    }
+
+    public void setIgnoreY(boolean value) {
+        this.ignoreY = value;
     }
 
     @Override
     public NbtCompound toTag() {
         NbtCompound tag = new NbtCompound();
 
-        if (blockPos != null) {
-            NbtCompound posTag = new NbtCompound();
-            posTag.putInt("x", blockPos.getX());
-            posTag.putInt("y", blockPos.getY());
-            posTag.putInt("z", blockPos.getZ());
-            tag.put("pos", posTag);
-        }
-
+        tag.putLong("pos", blockPos.asLong());
         tag.putBoolean("ignoreY", ignoreY);
+
         return tag;
     }
 
     @Override
     public GotoCmdSettings fromTag(NbtCompound tag) {
-        this.blockPos = tag.getCompound("pos")
-                .flatMap(pos -> pos.getInt("x")
-                        .flatMap(x -> pos.getInt("y").flatMap(y -> pos.getInt("z").map(z -> new BlockPos(x, y, z)))))
-                .orElse(null);
+        tag.getLong("pos").ifPresentOrElse(
+                l -> blockPos = BlockPos.fromLong(l),
+                () -> blockPos = new BlockPos(0, 0, 0));
 
         this.ignoreY = tag.getBoolean("ignoreY").orElse(true);
 

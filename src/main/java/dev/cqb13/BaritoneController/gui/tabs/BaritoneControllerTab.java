@@ -21,12 +21,8 @@ import meteordevelopment.meteorclient.pathing.BaritoneUtils;
 import meteordevelopment.meteorclient.pathing.PathManagers;
 import meteordevelopment.meteorclient.utils.render.color.Color;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.util.math.BlockPos;
 import baritone.api.BaritoneAPI;
 import baritone.api.IBaritone;
-import baritone.api.selection.ISelectionManager;
-import baritone.api.utils.BetterBlockPos;
-import baritone.process.BuilderProcess;
 
 public class BaritoneControllerTab extends Tab {
     public BaritoneControllerTab() {
@@ -77,10 +73,18 @@ public class BaritoneControllerTab extends Tab {
 
         private void selCmdSection() {
             SelCmdSettings sectionSettings = settings.getSelCmdSettings();
+            boolean isCollapsed = this.settings.isCollapsedSection(Section.Sel);
 
-            WSection selCmdSection = theme.section("Selection", true);
-            WBlockPosEdit selection1 = theme.blockPosEdit(new BlockPos(0, 0, 0));
-            WBlockPosEdit selection2 = theme.blockPosEdit(new BlockPos(0, 0, 0));
+            WSection selCmdSection = theme.section("Selection", !isCollapsed);
+            selCmdSection.action = () -> {
+                if (isCollapsed) {
+                    settings.removeCollapsedSection(Section.Sel);
+                } else {
+                    settings.addCollapsedSection(Section.Sel);
+                }
+            };
+            WBlockPosEdit selection1 = theme.blockPosEdit(sectionSettings.getSel1());
+            WBlockPosEdit selection2 = theme.blockPosEdit(sectionSettings.getSel2());
             WHorizontalList selectionManagementContainer = theme.horizontalList();
             WButton createSelBtn = theme.button("Create Selection");
             WButton clearSelBtn = theme.button("Clear Selection");
@@ -88,12 +92,12 @@ public class BaritoneControllerTab extends Tab {
 
             selection1.action = () -> {
                 sectionSettings.setSe1(selection1.get());
-                // TODO: save here
+                settings.save();
             };
 
             selection2.action = () -> {
                 sectionSettings.setSel2(selection2.get());
-                // TODO: save here
+                settings.save();
             };
 
             createSelBtn.action = () -> {
@@ -136,11 +140,17 @@ public class BaritoneControllerTab extends Tab {
             WButton gotoBtn = theme.button("Execute");
             WHorizontalList ignoreYContainer = theme.horizontalList();
             WCheckbox ignoreY = theme.checkbox(sectionSettings.getIgnoreY());
-            ignoreY.action = () -> {
-                BaritoneControllerConfig.get()
-                        .setGotoCmdSettings(new GotoCmdSettings(gotoCoords.get(), ignoreY.checked));
-            };
             WLabel label = theme.label("Ignore Y");
+
+            gotoCoords.action = () -> {
+                sectionSettings.setBlockPos(gotoCoords.get());
+                settings.save();
+            };
+
+            ignoreY.action = () -> {
+                sectionSettings.setIgnoreY(ignoreY.checked);
+                settings.save();
+            };
 
             gotoBtn.action = () -> {
                 BaritoneControllerConfig.get()
