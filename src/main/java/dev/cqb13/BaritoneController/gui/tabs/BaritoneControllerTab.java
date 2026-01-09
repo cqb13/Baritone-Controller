@@ -81,15 +81,15 @@ public class BaritoneControllerTab extends Tab {
 
             WHorizontalList widthContainer = theme.horizontalList();
             WLabel widthLabel = theme.label("Width");
-            WIntEdit width = theme.intEdit(3, 1, 1000, 1, 100, false);
+            WIntEdit width = theme.intEdit(sectionSettings.getWidth(), 1, 1000, 1, 100, false);
 
             WHorizontalList heightContainer = theme.horizontalList();
             WLabel heightLabel = theme.label("Height");
-            WIntEdit height = theme.intEdit(3, 1, 1000, 1, 100, false);
+            WIntEdit height = theme.intEdit(sectionSettings.getHeight(), 1, 1000, 1, 100, false);
 
             WHorizontalList depthContainer = theme.horizontalList();
             WLabel depthLabel = theme.label("Depth");
-            WIntEdit depth = theme.intEdit(5, 1, 10000, 1, 100, false);
+            WIntEdit depth = theme.intEdit(sectionSettings.getDepth(), 1, 10000, 1, 100, false);
 
             WButton digBtn = theme.button("Start Digging");
 
@@ -107,6 +107,10 @@ public class BaritoneControllerTab extends Tab {
 
             depth.action = () -> {
                 sectionSettings.setDepth(depth.get());
+            };
+
+            digBtn.action = () -> {
+                BaritoneManager.digTunnel(b, mc.world, mc.player, width.get(), height.get(), depth.get());
             };
 
             add(tunnelCmdSection).expandX();
@@ -181,7 +185,7 @@ public class BaritoneControllerTab extends Tab {
 
             WSection gotoCmdSection = theme.section("Go To", sectionSettings.isExpanded());
             WBlockPosEdit gotoCoords = theme.blockPosEdit(sectionSettings.getBlockPos());
-            WButton gotoBtn = theme.button("Execute");
+            WButton gotoBtn = theme.button("Start Walking");
             WHorizontalList ignoreYContainer = theme.horizontalList();
             WCheckbox ignoreY = theme.checkbox(sectionSettings.getIgnoreY());
             WLabel label = theme.label("Ignore Y");

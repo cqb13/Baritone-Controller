@@ -17,6 +17,7 @@ A Meteor Addon that provides a simple frontend for baritone commands.
 - Buttons for common baritone commands
 - Go To command builder
 - Sel command builder
+- Tunnel command builder
 
 ## Coming Soon
 

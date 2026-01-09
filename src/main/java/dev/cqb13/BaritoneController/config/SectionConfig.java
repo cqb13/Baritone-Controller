@@ -44,7 +44,7 @@ public abstract class SectionConfig implements ISerializable<SectionConfig> {
 
     @Override
     public SectionConfig fromTag(NbtCompound tag) {
-        this.expanded = tag.getBoolean("").orElse(false);
+        this.expanded = tag.getBoolean("expanded").orElse(true);
 
         return this;
     }

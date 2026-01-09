@@ -8,6 +8,8 @@ import baritone.api.selection.ISelectionManager;
 import baritone.api.utils.BetterBlockPos;
 import baritone.api.utils.BlockOptionalMeta;
 import net.minecraft.block.Blocks;
+import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
 
@@ -45,5 +47,53 @@ public class BaritoneManager {
 
         return true;
 
+    }
+
+    // Based on:
+    // https://github.com/cabaletta/baritone/blob/670dba0772cb46a0036bd3662982c7e8b7da1ce4/src/main/java/baritone/command/defaults/TunnelCommand.java#L39
+    public static boolean digTunnel(IBaritone b, ClientWorld world, ClientPlayerEntity player, int width, int height,
+            int depth) {
+        if (world == null || player == null || width < 1 || height < 1 || depth < 1 || height > world.getHeight()) {
+            return false;
+        }
+
+        BlockPos corner1;
+        BlockPos corner2;
+
+        width--;
+        height--;
+
+        int originX = player.getBlockX();
+        int originY = player.getBlockY();
+        int originZ = player.getBlockZ();
+
+        int addition = ((width % 2 == 0) ? 0 : 1);
+        switch (player.getFacing()) {
+            case NORTH:
+                corner1 = new BlockPos(originX - width / 2, originY, originZ);
+                corner2 = new BlockPos(originX + width / 2 + addition, originY + height, originZ - depth);
+                break;
+            case EAST:
+                corner1 = new BlockPos(originX, originY, originZ - width / 2);
+                corner2 = new BlockPos(originX + depth, originY + height, originZ + width / 2 + addition);
+                break;
+            case SOUTH:
+                corner1 = new BlockPos(originX + width / 2, originY, originZ);
+                corner2 = new BlockPos(originX - width / 2 + addition, originY + height, originZ + depth);
+                break;
+            case WEST:
+                corner1 = new BlockPos(originX, originY, originZ + width / 2 + addition);
+                corner2 = new BlockPos(originX - depth, originY + height, originZ - width / 2);
+                break;
+            default:
+                return false;
+        }
+
+        // kinda hacky, but whatever
+        var tunnelSel = createSelection(b, corner1, corner2);
+        clearSelectionArea(b, tunnelSel);
+        removeSelection(b, tunnelSel);
+
+        return true;
     }
 }
