@@ -6,6 +6,7 @@ import baritone.api.BaritoneAPI;
 import baritone.api.IBaritone;
 import dev.cqb13.BaritoneController.BaritoneManager;
 import dev.cqb13.BaritoneController.config.BaritoneControllerConfig;
+import dev.cqb13.BaritoneController.config.FarmCmdConfig;
 import dev.cqb13.BaritoneController.config.GotoCmdConfig;
 import dev.cqb13.BaritoneController.config.SelCmdConfig;
 import dev.cqb13.BaritoneController.config.TunnelCmdConfig;
@@ -17,8 +18,10 @@ import meteordevelopment.meteorclient.gui.tabs.WindowTabScreen;
 import meteordevelopment.meteorclient.gui.widgets.WLabel;
 import meteordevelopment.meteorclient.gui.widgets.containers.WHorizontalList;
 import meteordevelopment.meteorclient.gui.widgets.containers.WSection;
+import meteordevelopment.meteorclient.gui.widgets.containers.WVerticalList;
 import meteordevelopment.meteorclient.gui.widgets.input.WBlockPosEdit;
 import meteordevelopment.meteorclient.gui.widgets.input.WIntEdit;
+import meteordevelopment.meteorclient.gui.widgets.input.WTextBox;
 import meteordevelopment.meteorclient.gui.widgets.pressable.WButton;
 import meteordevelopment.meteorclient.gui.widgets.pressable.WCheckbox;
 import meteordevelopment.meteorclient.pathing.BaritoneUtils;
@@ -72,6 +75,51 @@ public class BaritoneControllerTab extends Tab {
             gotoCmdSection();
             selCmdSection();
             tunnelCmdSection();
+            farmCmdSection();
+        }
+
+        private void farmCmdSection() {
+            FarmCmdConfig sectionSettings = settings.getFarmCmdConfig();
+
+            WSection farmSection = theme.section("Farm", sectionSettings.isExpanded());
+
+            WHorizontalList rangeToggleContainer = theme.horizontalList();
+            WCheckbox useRangeLimit = theme.checkbox(sectionSettings.isUseRange());
+            WLabel rangeLimitLabel = theme.label("Limit Range");
+
+            WHorizontalList rangeContainer = theme.horizontalList();
+            WLabel rangeValueLabel = theme.label("Range");
+            WIntEdit rangeValue = theme.intEdit(sectionSettings.getRange(), 1, 10000, 1, 10000, false);
+
+            WButton farmBtn = theme.button("Start Farming");
+
+            farmBtn.action = () -> {
+                BaritoneManager.farm(b, mc.player.getBlockPos(), useRangeLimit.checked ? rangeValue.get() : 0);
+            };
+
+            farmSection.action = () -> {
+                sectionSettings.setExpanded(farmSection.isExpanded());
+            };
+
+            useRangeLimit.action = () -> {
+                sectionSettings.setUseRange(useRangeLimit.checked);
+            };
+
+            rangeValue.action = () -> {
+                sectionSettings.setRange(rangeValue.get());
+            };
+
+            add(farmSection).expandX();
+
+            farmSection.add(rangeToggleContainer).expandX();
+            rangeToggleContainer.add(useRangeLimit);
+            rangeToggleContainer.add(rangeLimitLabel);
+
+            farmSection.add(rangeContainer).expandX();
+            rangeContainer.add(rangeValueLabel).expandX();
+            rangeContainer.add(rangeValue).expandX();
+
+            farmSection.add(farmBtn).expandX();
         }
 
         private void tunnelCmdSection() {

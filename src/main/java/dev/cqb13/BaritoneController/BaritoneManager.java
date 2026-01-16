@@ -96,4 +96,8 @@ public class BaritoneManager {
 
         return true;
     }
+
+    public static void farm(IBaritone b, BlockPos origin, int range) {
+        b.getFarmProcess().farm(range, origin);
+    }
 }

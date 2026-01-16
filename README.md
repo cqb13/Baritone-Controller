@@ -18,8 +18,4 @@ A Meteor Addon that provides a simple frontend for baritone commands.
 - Go To command builder
 - Sel command builder
 - Tunnel command builder
-
-## Coming Soon
-
-- Common command saving
-- GOTO cmd chaining
+- Farm command builder

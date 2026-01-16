@@ -9,6 +9,7 @@ public class BaritoneControllerConfig extends System<BaritoneControllerConfig> {
     private final GotoCmdConfig gotoCmdConfig;
     private final SelCmdConfig selCmdConfig;
     private final TunnelCmdConfig tunnelCmdConfig;
+    private final FarmCmdConfig farmCmdConfig;
 
     public BaritoneControllerConfig() {
         super("baritone-controller");
@@ -26,6 +27,8 @@ public class BaritoneControllerConfig extends System<BaritoneControllerConfig> {
                 saveCallback);
 
         this.tunnelCmdConfig = new TunnelCmdConfig(3, 3, 5, saveCallback);
+
+        this.farmCmdConfig = new FarmCmdConfig(50, false, saveCallback);
     }
 
     public static BaritoneControllerConfig get() {
@@ -44,6 +47,10 @@ public class BaritoneControllerConfig extends System<BaritoneControllerConfig> {
         return tunnelCmdConfig;
     }
 
+    public FarmCmdConfig getFarmCmdConfig() {
+        return farmCmdConfig;
+    }
+
     @Override
     public NbtCompound toTag() {
         NbtCompound tag = new NbtCompound();
@@ -51,6 +58,7 @@ public class BaritoneControllerConfig extends System<BaritoneControllerConfig> {
         tag.put("goto-cmd", this.gotoCmdConfig.toTag());
         tag.put("sel-cmd", this.selCmdConfig.toTag());
         tag.put("tunnel-cmd", this.tunnelCmdConfig.toTag());
+        tag.put("farm-cmd", this.farmCmdConfig.toTag());
 
         return tag;
     }
@@ -68,6 +76,10 @@ public class BaritoneControllerConfig extends System<BaritoneControllerConfig> {
         tag.getCompound("tunnel-cmd").ifPresentOrElse(
                 tunnelTag -> this.tunnelCmdConfig.fromTag(tunnelTag),
                 () -> this.tunnelCmdConfig.reset());
+
+        tag.getCompound("farm-cmd").ifPresentOrElse(
+                farmTag -> this.farmCmdConfig.fromTag(farmTag),
+                () -> this.farmCmdConfig.reset());
 
         return this;
     }
