@@ -19,3 +19,4 @@ A Meteor Addon that provides a simple frontend for baritone commands.
 - Sel command builder
 - Tunnel command builder
 - Farm command builder
+- ETA Starscript and Text HUD Elements
