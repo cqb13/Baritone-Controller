@@ -1,6 +1,6 @@
 package dev.cqb13.BaritoneController.config;
 
-import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.CompoundTag;
 
 public class FarmCmdConfig extends SectionConfig {
     private boolean useRange;
@@ -37,7 +37,7 @@ public class FarmCmdConfig extends SectionConfig {
     }
 
     @Override
-    public NbtCompound toTag() {
+    public CompoundTag toTag() {
         var tag = super.toTag();
 
         tag.putInt("range", this.range);
@@ -47,11 +47,11 @@ public class FarmCmdConfig extends SectionConfig {
     }
 
     @Override
-    public FarmCmdConfig fromTag(NbtCompound tag) {
+    public FarmCmdConfig fromTag(CompoundTag tag) {
         super.fromTag(tag);
 
-        this.range = tag.getInt("range", 50);
-        this.useRange = tag.getBoolean("useRange", false);
+        this.range = tag.getIntOr("range", 50);
+        this.useRange = tag.getBooleanOr("useRange", false);
 
         return this;
     }

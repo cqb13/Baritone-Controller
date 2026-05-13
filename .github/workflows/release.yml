@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths-ignore:
       - "*.md"
+      - "meteor-addon-list.json"
 
 jobs:
   build:
@@ -23,12 +24,11 @@ jobs:
         with:
           java-version: 21
           distribution: corretto
-      - name: Read version from gradle.properties
+      - name: Read version from libs.versions.toml
         id: version
         run: |
-          # thanks to Catppuccin Addon
-          VERSION=$(grep '^mod-version *= *"' gradle/libs.versions.toml | cut -d '"' -f2 | tr -d '[:space:]')
-          MC_VERSION=$(grep '^minecraft *= *"' gradle/libs.versions.toml | cut -d '"' -f2 | tr -d '[:space:]')
+          VERSION=$(grep "^mod-version" gradle/libs.versions.toml | cut -d '=' -f2 | tr -d '[:space:]' | tr -d '"')
+          MC_VERSION=$(grep '^minecraft = "' gradle/libs.versions.toml | cut -d '=' -f2 | tr -d '[:space:]' | tr -d '"')
           TAG_NAME="mc${MC_VERSION}-v${VERSION}"
           RELEASE_NAME="${MC_VERSION}-${VERSION} build"
 
@@ -47,7 +47,7 @@ jobs:
       - name: Remove *-dev.jar
         run: rm ./build/libs/*-dev.jar || true
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           tag_name: ${{ steps.version.outputs.tag }}
           name: "${{ steps.version.outputs.release_name }} ${{ github.run_number }}"

@@ -2,8 +2,8 @@ package dev.cqb13.BaritoneController.config;
 
 import meteordevelopment.meteorclient.systems.System;
 import meteordevelopment.meteorclient.systems.Systems;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 
 public class BaritoneControllerConfig extends System<BaritoneControllerConfig> {
     private final GotoCmdConfig gotoCmdConfig;
@@ -17,13 +17,13 @@ public class BaritoneControllerConfig extends System<BaritoneControllerConfig> {
         Runnable saveCallback = this::save;
 
         this.gotoCmdConfig = new GotoCmdConfig(
-                BlockPos.ORIGIN,
+                BlockPos.ZERO,
                 true,
                 saveCallback);
 
         this.selCmdConfig = new SelCmdConfig(
-                BlockPos.ORIGIN,
-                BlockPos.ORIGIN,
+                BlockPos.ZERO,
+                BlockPos.ZERO,
                 saveCallback);
 
         this.tunnelCmdConfig = new TunnelCmdConfig(3, 3, 5, saveCallback);
@@ -52,8 +52,8 @@ public class BaritoneControllerConfig extends System<BaritoneControllerConfig> {
     }
 
     @Override
-    public NbtCompound toTag() {
-        NbtCompound tag = new NbtCompound();
+    public CompoundTag toTag() {
+        CompoundTag tag = new CompoundTag();
 
         tag.put("goto-cmd", this.gotoCmdConfig.toTag());
         tag.put("sel-cmd", this.selCmdConfig.toTag());
@@ -64,7 +64,7 @@ public class BaritoneControllerConfig extends System<BaritoneControllerConfig> {
     }
 
     @Override
-    public BaritoneControllerConfig fromTag(NbtCompound tag) {
+    public BaritoneControllerConfig fromTag(CompoundTag tag) {
         tag.getCompound("goto-cmd").ifPresentOrElse(
                 gotoTag -> this.gotoCmdConfig.fromTag(gotoTag),
                 () -> this.gotoCmdConfig.reset());

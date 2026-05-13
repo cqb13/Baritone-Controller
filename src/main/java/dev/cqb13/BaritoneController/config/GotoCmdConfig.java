@@ -1,7 +1,7 @@
 package dev.cqb13.BaritoneController.config;
 
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 
 public class GotoCmdConfig extends SectionConfig {
     private BlockPos blockPos;
@@ -15,7 +15,7 @@ public class GotoCmdConfig extends SectionConfig {
 
     @Override
     public void reset() {
-        this.blockPos = BlockPos.ORIGIN;
+        this.blockPos = BlockPos.ZERO;
         this.ignoreY = true;
     }
 
@@ -38,7 +38,7 @@ public class GotoCmdConfig extends SectionConfig {
     }
 
     @Override
-    public NbtCompound toTag() {
+    public CompoundTag toTag() {
         var tag = super.toTag();
 
         tag.putLong("pos", blockPos.asLong());
@@ -48,11 +48,11 @@ public class GotoCmdConfig extends SectionConfig {
     }
 
     @Override
-    public GotoCmdConfig fromTag(NbtCompound tag) {
+    public GotoCmdConfig fromTag(CompoundTag tag) {
         super.fromTag(tag);
 
         tag.getLong("pos").ifPresentOrElse(
-                l -> blockPos = BlockPos.fromLong(l),
+                l -> blockPos = BlockPos.of(l),
                 () -> blockPos = new BlockPos(0, 0, 0));
 
         this.ignoreY = tag.getBoolean("ignoreY").orElse(true);

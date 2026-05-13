@@ -1,7 +1,7 @@
 package dev.cqb13.BaritoneController.config;
 
 import meteordevelopment.meteorclient.utils.misc.ISerializable;
-import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.CompoundTag;
 
 public abstract class SectionConfig implements ISerializable<SectionConfig> {
     private String sectionTag;
@@ -34,8 +34,8 @@ public abstract class SectionConfig implements ISerializable<SectionConfig> {
     public abstract void reset();
 
     @Override
-    public NbtCompound toTag() {
-        NbtCompound tag = new NbtCompound();
+    public CompoundTag toTag() {
+        CompoundTag tag = new CompoundTag();
 
         tag.putBoolean("expanded", expanded);
 
@@ -43,7 +43,7 @@ public abstract class SectionConfig implements ISerializable<SectionConfig> {
     }
 
     @Override
-    public SectionConfig fromTag(NbtCompound tag) {
+    public SectionConfig fromTag(CompoundTag tag) {
         this.expanded = tag.getBoolean("expanded").orElse(true);
 
         return this;

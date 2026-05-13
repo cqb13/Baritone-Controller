@@ -1,6 +1,6 @@
 package dev.cqb13.BaritoneController.config;
 
-import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.CompoundTag;
 
 public class TunnelCmdConfig extends SectionConfig {
     private int width;
@@ -49,7 +49,7 @@ public class TunnelCmdConfig extends SectionConfig {
     }
 
     @Override
-    public NbtCompound toTag() {
+    public CompoundTag toTag() {
         var tag = super.toTag();
 
         tag.putInt("width", this.width);
@@ -60,7 +60,7 @@ public class TunnelCmdConfig extends SectionConfig {
     }
 
     @Override
-    public TunnelCmdConfig fromTag(NbtCompound tag) {
+    public TunnelCmdConfig fromTag(CompoundTag tag) {
         super.fromTag(tag);
 
         tag.getInt("width").ifPresentOrElse(

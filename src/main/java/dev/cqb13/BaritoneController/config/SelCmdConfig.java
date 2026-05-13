@@ -1,8 +1,8 @@
 package dev.cqb13.BaritoneController.config;
 
 import baritone.api.selection.ISelection;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 
 public class SelCmdConfig extends SectionConfig {
     private BlockPos sel1;
@@ -17,8 +17,8 @@ public class SelCmdConfig extends SectionConfig {
 
     @Override
     public void reset() {
-        this.sel1 = BlockPos.ORIGIN;
-        this.sel2 = BlockPos.ORIGIN;
+        this.sel1 = BlockPos.ZERO;
+        this.sel2 = BlockPos.ZERO;
         this.sel = null;
     }
 
@@ -49,7 +49,7 @@ public class SelCmdConfig extends SectionConfig {
     }
 
     @Override
-    public NbtCompound toTag() {
+    public CompoundTag toTag() {
         var tag = super.toTag();
 
         tag.putLong("sel1", sel1.asLong());
@@ -59,15 +59,15 @@ public class SelCmdConfig extends SectionConfig {
     }
 
     @Override
-    public SelCmdConfig fromTag(NbtCompound tag) {
+    public SelCmdConfig fromTag(CompoundTag tag) {
         super.fromTag(tag);
 
         tag.getLong("sel1").ifPresentOrElse(
-                l -> sel1 = BlockPos.fromLong(l),
+                l -> sel1 = BlockPos.of(l),
                 () -> sel1 = new BlockPos(0, 0, 0));
 
         tag.getLong("sel2").ifPresentOrElse(
-                l -> sel2 = BlockPos.fromLong(l),
+                l -> sel2 = BlockPos.of(l),
                 () -> sel2 = new BlockPos(0, 0, 0));
 
         return this;

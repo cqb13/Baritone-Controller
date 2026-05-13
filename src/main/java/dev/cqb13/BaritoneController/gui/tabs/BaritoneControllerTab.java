@@ -25,7 +25,7 @@ import meteordevelopment.meteorclient.gui.widgets.pressable.WCheckbox;
 import meteordevelopment.meteorclient.pathing.BaritoneUtils;
 import meteordevelopment.meteorclient.pathing.PathManagers;
 import meteordevelopment.meteorclient.utils.render.color.Color;
-import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screens.Screen;
 
 public class BaritoneControllerTab extends Tab {
     public BaritoneControllerTab() {
@@ -64,7 +64,7 @@ public class BaritoneControllerTab extends Tab {
                 return;
             }
 
-            if (mc.world == null) {
+            if (mc.level == null) {
                 add(theme.label("Please join a world.")).widget().color(Color.ORANGE);
                 return;
             }
@@ -92,7 +92,7 @@ public class BaritoneControllerTab extends Tab {
             WButton farmBtn = theme.button("Start Farming");
 
             farmBtn.action = () -> {
-                BaritoneManager.farm(b, mc.player.getBlockPos(), useRangeLimit.checked ? rangeValue.get() : 0);
+                BaritoneManager.farm(b, mc.player.blockPosition(), useRangeLimit.checked ? rangeValue.get() : 0);
             };
 
             farmSection.action = () -> {
@@ -156,7 +156,7 @@ public class BaritoneControllerTab extends Tab {
             };
 
             digBtn.action = () -> {
-                BaritoneManager.digTunnel(b, mc.world, mc.player, width.get(), height.get(), depth.get());
+                BaritoneManager.digTunnel(b, mc.level, mc.player, width.get(), height.get(), depth.get());
             };
 
             add(tunnelCmdSection).expandX();
